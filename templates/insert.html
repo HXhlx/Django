@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% load static %}
+    <meta charset="UTF-8" name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Insert</title>
+    <link rel="stylesheet" href="{% static 'bootstrap/css/bootstrap.css' %}">
+</head>
+<body>
+<div class="container">
+    <h1>Schedule insert</h1>
+    <form action="{% url 'add' username %}" method="post">
+        {% csrf_token %}
+        <div>
+            Title:
+            <label>
+                <input type="text" required name="title">
+            </label><br>
+            Content:
+            <label>
+                <input type="text" name="content">
+            </label><br>
+            Start Time:
+            <label>
+                <input type="datetime-local" name="start time">
+            </label><br>
+            End Time:
+            <label>
+                <input type="datetime-local" name="end time">
+            </label><br>
+        </div>
+        <button type="submit" class="btn btn-primary">Insert</button>
+    </form>
+</div>
+</body>
+</html>

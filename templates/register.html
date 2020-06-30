@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% load static %}
+    <meta charset="UTF-8" name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>registion</title>
+    <link rel="stylesheet" href="{% static 'bootstrap/css/bootstrap.css' %}">
+</head>
+<body>
+<div class="container">
+    <h1>user register</h1>
+    <form action="{% url 'register-confirm' %}" method="post">
+        {% csrf_token %}
+        {% if username_error %}
+            <div class="alert alert-danger">
+                <strong>{{ username_error }}</strong>
+            </div>
+        {% endif %}
+        username:
+        <label>
+            <input type="text" required name="username">
+        </label><br>
+        {% if password_error %}
+            <div class="alert alert-danger">
+                <strong>{{ password_error }}</strong>
+            </div>
+        {% endif %}
+        password:
+        <label>
+            <input type="password" required name="password">
+        </label><br>
+        confirm password:
+        <label>
+            <input type="password" required name="confirmpassword">
+        </label><br>
+        <button type="submit" class="btn btn-primary">Register</button>
+    </form>
+</div>
+</body>
+</html>

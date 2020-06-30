@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% load static %}
+    <meta charset="UTF-8" name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Home</title>
+    <link rel="stylesheet" href="{% static 'bootstrap/css/bootstrap.css' %}">
+</head>
+<body>
+<div class="container" style="background-color: #0f6674">
+    <div style="padding: 240px">
+        <h1 style="text-align: center">
+            <strong>欢迎使用个人信息管理系统</strong>
+        </h1>
+    </div>
+    <div style="text-align: center">
+        <div class="btn-group">
+            <a href="{% url 'register' %}" class="btn btn-success">注册</a>
+            <a href="{% url 'login' %}" class="btn btn-info">登录</a>
+        </div>
+    </div>
+</div>
+</body>
+</html>

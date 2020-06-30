@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% load static %}
+    <meta charset="UTF-8" name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Schedule</title>
+    <link rel="stylesheet" href="{% static 'bootstrap/css/bootstrap.css' %}">
+</head>
+<body>
+<div class="container">
+    <div style="text-align: center">
+        <div class="btn-group">
+            <a href="{% url 'look' username %}" class="btn btn-primary">look person info</a>
+            <a href="{% url 'modify' username %}" class="btn btn-danger">modify person info</a>
+            <a href="{% url 'schedule' username %}" class="btn btn-info">look schedule info</a>
+        </div>
+    </div>
+    <table class="table table-hover">
+        <thead class="thead-dark">
+        <tr>
+            <th>Title</th>
+            <th>Content</th>
+            <th>Start Time</th>
+            <th>End Time</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for schedule in schedules %}
+            <tr>
+                <td><a href="{% url 'change' username schedule.title %}">{{ schedule.title }}</a></td>
+                {% if schedule.text == None %}
+                    <td></td>
+                {% else %}
+                    <td>{{ schedule.text }}</td>
+                {% endif %}
+                {% if schedule.start_time == None %}
+                    <td></td>
+                {% else %}
+                    <td>{{ schedule.start_time }}</td>
+                {% endif %}
+                {% if schedule.end_time == None %}
+                    <td></td>
+                {% else %}
+                    <td>{{ schedule.end_time }}</td>
+                {% endif %}
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    <a href="{% url 'add' username %}" class="btn btn-primary">添加</a>
+</div>
+</body>
+</html>

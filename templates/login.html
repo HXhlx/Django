@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% load static %}
+    <meta charset="UTF-8" name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>login</title>
+    <link rel="stylesheet" href="{% static 'bootstrap/css/bootstrap.css' %}">
+</head>
+<body>
+<div class="container">
+    <h1>user login</h1>
+    <form action="{% url 'login-confirm' %}" method="post">
+        {% csrf_token %}
+        {% if error_message %}
+            <div class="alert alert-danger">
+                <strong>{{ error_message }}</strong>
+            </div>
+        {% endif %}
+        username:
+        <label>
+            <input type="text" required name="username">
+        </label><br>
+        password:
+        <label>
+            <input type="password" required name="password">
+        </label><br>
+        <button type="submit" class="btn btn-primary">Login</button>
+    </form>
+</div>
+</body>
+</html>
