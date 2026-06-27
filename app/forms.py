@@ -1,6 +1,7 @@
 from django.contrib.auth.forms import UserCreationForm
 from django.core.exceptions import ValidationError
 from django import forms
+from django.utils.translation import gettext_lazy as _
 
 from .models import User, Profile, Schedule
 
@@ -12,7 +13,7 @@ class RegisterForm(UserCreationForm):
         model = User
         fields = ['username', 'password1', 'password2']
         labels = {
-            'username': '用户名',
+            'username': _('用户名'),
         }
 
 
@@ -23,12 +24,12 @@ class ProfileForm(forms.ModelForm):
         model = Profile
         fields = ['name', 'sex', 'birth', 'phone', 'email', 'address']
         labels = {
-            'name': '姓名',
-            'sex': '性别',
-            'birth': '出生日期',
-            'phone': '电话',
-            'email': '邮箱',
-            'address': '地址',
+            'name': _('姓名'),
+            'sex': _('性别'),
+            'birth': _('出生日期'),
+            'phone': _('电话'),
+            'email': _('邮箱'),
+            'address': _('地址'),
         }
         widgets = {
             'birth': forms.DateInput(attrs={'type': 'date', 'class': 'form-control'}),
@@ -42,21 +43,21 @@ class ProfileForm(forms.ModelForm):
     def clean_name(self):
         name = self.cleaned_data.get('name', '').strip()
         if not name:
-            raise forms.ValidationError('请输入姓名')
+            raise forms.ValidationError(_('请输入姓名'))
         if len(name) < 2:
-            raise forms.ValidationError('姓名至少需要 2 个字符')
+            raise forms.ValidationError(_('姓名至少需要 2 个字符'))
         return name
 
     def clean_phone(self):
         phone = self.cleaned_data.get('phone', '').strip()
         if not phone:
-            raise forms.ValidationError('请输入电话号码')
+            raise forms.ValidationError(_('请输入电话号码'))
         import re
         if not re.match(r'^\+?[0-9\s\-()]{7,20}$', phone):
-            raise forms.ValidationError('请输入有效的电话号码（支持国际格式，如 +86 13800138000）')
+            raise forms.ValidationError(_('请输入有效的电话号码（支持国际格式，如 +86 13800138000）'))
         digits = re.sub(r'\D', '', phone)
         if len(digits) < 7 or len(digits) > 15:
-            raise forms.ValidationError('电话号码长度应在 7-15 位之间')
+            raise forms.ValidationError(_('电话号码长度应在 7-15 位之间'))
         return phone
 
     def clean_email(self):
@@ -65,23 +66,23 @@ class ProfileForm(forms.ModelForm):
             import re
             pattern = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
             if not re.match(pattern, email):
-                raise forms.ValidationError('请输入有效的邮箱地址')
+                raise forms.ValidationError(_('请输入有效的邮箱地址'))
         return email
 
 
 class ScheduleForm(forms.ModelForm):
     """日程表单"""
-    start_date = forms.DateField(label='开始日期', required=False, widget=forms.DateInput(attrs={'type': 'date', 'class': 'form-control'}))
-    start_time = forms.TimeField(label='开始时间', required=False, widget=forms.TimeInput(attrs={'type': 'time', 'class': 'form-control'}))
-    end_date = forms.DateField(label='结束日期', required=False, widget=forms.DateInput(attrs={'type': 'date', 'class': 'form-control'}))
-    end_time = forms.TimeField(label='结束时间', required=False, widget=forms.TimeInput(attrs={'type': 'time', 'class': 'form-control'}))
+    start_date = forms.DateField(label=_('开始日期'), required=False, widget=forms.DateInput(attrs={'type': 'date', 'class': 'form-control'}))
+    start_time = forms.TimeField(label=_('开始时间'), required=False, widget=forms.TimeInput(attrs={'type': 'time', 'class': 'form-control'}))
+    end_date = forms.DateField(label=_('结束日期'), required=False, widget=forms.DateInput(attrs={'type': 'date', 'class': 'form-control'}))
+    end_time = forms.TimeField(label=_('结束时间'), required=False, widget=forms.TimeInput(attrs={'type': 'time', 'class': 'form-control'}))
 
     class Meta:
         model = Schedule
         fields = ['title', 'text']
         labels = {
-            'title': '标题',
-            'text': '内容',
+            'title': _('标题'),
+            'text': _('内容'),
         }
         widgets = {
             'title': forms.TextInput(attrs={'class': 'form-control'}),
@@ -119,5 +120,5 @@ class ScheduleForm(forms.ModelForm):
         start = cleaned_data.get('start_time')
         end = cleaned_data.get('end_time')
         if start and end and end <= start:
-            raise ValidationError('结束时间必须晚于开始时间')
+            raise ValidationError(_('结束时间必须晚于开始时间'))
         return cleaned_data

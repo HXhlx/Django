@@ -4,6 +4,7 @@ from django.contrib import messages
 from django.core.paginator import Paginator
 from django.db import IntegrityError
 from django.shortcuts import render, redirect, get_object_or_404
+from django.utils.translation import gettext_lazy as _
 
 from .models import User, Profile, Schedule
 from .forms import RegisterForm, ProfileForm, ScheduleForm
@@ -20,7 +21,7 @@ def register_view(request):
             user = form.save()
             Profile.objects.create(user=user)
             login(request, user)
-            messages.success(request, '注册成功！')
+            messages.success(request, _('注册成功！'))
             return redirect('profile', username=user.username)
     else:
         form = RegisterForm()
@@ -34,17 +35,17 @@ def login_view(request):
         user = authenticate(request, username=username, password=password)
         if user is not None:
             login(request, user)
-            messages.success(request, '登录成功！')
+            messages.success(request, _('登录成功！'))
             return redirect('profile', username=user.username)
         else:
-            messages.error(request, '用户名或密码错误')
+            messages.error(request, _('用户名或密码错误'))
     return render(request, 'app/login.html')
 
 
 @login_required
 def logout_view(request):
     logout(request)
-    messages.success(request, '已退出登录')
+    messages.success(request, _('已退出登录'))
     return redirect('home')
 
 
@@ -52,9 +53,9 @@ def logout_view(request):
 def profile_view(request, username):
     user = get_object_or_404(User, username=username)
     if request.user != user:
-        messages.error(request, '无权访问他人个人信息')
+        messages.error(request, _('无权访问他人个人信息'))
         return redirect('home')
-    profile, _ = Profile.objects.get_or_create(user=user)
+    profile, _created = Profile.objects.get_or_create(user=user)
     return render(request, 'app/profile.html', {'profile_user': user, 'profile': profile})
 
 
@@ -62,14 +63,14 @@ def profile_view(request, username):
 def profile_edit_view(request, username):
     user = get_object_or_404(User, username=username)
     if request.user != user:
-        messages.error(request, '无权修改他人个人信息')
+        messages.error(request, _('无权修改他人个人信息'))
         return redirect('home')
-    profile, _ = Profile.objects.get_or_create(user=user)
+    profile, _created = Profile.objects.get_or_create(user=user)
     if request.method == 'POST':
         form = ProfileForm(request.POST, instance=profile)
         if form.is_valid():
             form.save()
-            messages.success(request, '个人信息修改成功！')
+            messages.success(request, _('个人信息修改成功！'))
             return redirect('profile', username=username)
     else:
         form = ProfileForm(instance=profile)
@@ -80,7 +81,7 @@ def profile_edit_view(request, username):
 def schedule_list_view(request, username):
     user = get_object_or_404(User, username=username)
     if request.user != user:
-        messages.error(request, '无权查看他人日程')
+        messages.error(request, _('无权查看他人日程'))
         return redirect('home')
 
     schedules = Schedule.objects.filter(user=user)
@@ -104,7 +105,7 @@ def schedule_list_view(request, username):
 def schedule_add_view(request, username):
     user = get_object_or_404(User, username=username)
     if request.user != user:
-        messages.error(request, '无权为他人添加日程')
+        messages.error(request, _('无权为他人添加日程'))
         return redirect('home')
 
     if request.method == 'POST':
@@ -113,7 +114,7 @@ def schedule_add_view(request, username):
             schedule = form.save(commit=False)
             schedule.user = user
             schedule.save()
-            messages.success(request, '日程添加成功！')
+            messages.success(request, _('日程添加成功！'))
             return redirect('schedule_list', username=username)
     else:
         form = ScheduleForm()
@@ -124,7 +125,7 @@ def schedule_add_view(request, username):
 def schedule_edit_view(request, username, pk):
     user = get_object_or_404(User, username=username)
     if request.user != user:
-        messages.error(request, '无权修改他人日程')
+        messages.error(request, _('无权修改他人日程'))
         return redirect('home')
 
     schedule = get_object_or_404(Schedule, pk=pk, user=user)
@@ -132,13 +133,13 @@ def schedule_edit_view(request, username, pk):
     if request.method == 'POST':
         if request.POST.get('operate') == 'delete':
             schedule.delete()
-            messages.success(request, '日程已删除')
+            messages.success(request, _('日程已删除'))
             return redirect('schedule_list', username=username)
 
         form = ScheduleForm(request.POST, instance=schedule)
         if form.is_valid():
             form.save()
-            messages.success(request, '日程修改成功！')
+            messages.success(request, _('日程修改成功！'))
             return redirect('schedule_list', username=username)
     else:
         form = ScheduleForm(instance=schedule)
