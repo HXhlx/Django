@@ -1,16 +1,15 @@
 from django.urls import path
-from .views import *
+
+from . import views
 
 urlpatterns = [
-    path('', home, name='home'),
-    path('register/', register, name='register'),
-    path('register-confirm/', register_confirm, name='register-confirm'),
-    path('login/', login, name='login'),
-    path('login-confirm/', login_confirm, name='login-confirm'),
-    path('look/<username>', look, name='look'),
-    path('modify/<username>', modify, name='modify'),
-    path('modify-confirm/<username>', modify_confirm, name='modify-confirm'),
-    path('schedule/<username>', schedule, name='schedule'),
-    path('schedule/<username>/add', insert, name='add'),
-    path('schedule/<username>/<title>', change, name='change')
+    path('', views.home, name='home'),
+    path('register/', views.register_view, name='register'),
+    path('login/', views.login_view, name='login'),
+    path('logout/', views.logout_view, name='logout'),
+    path('user/<str:username>/', views.profile_view, name='profile'),
+    path('user/<str:username>/edit/', views.profile_edit_view, name='profile_edit'),
+    path('user/<str:username>/schedules/', views.schedule_list_view, name='schedule_list'),
+    path('user/<str:username>/schedules/add/', views.schedule_add_view, name='schedule_add'),
+    path('user/<str:username>/schedules/<int:pk>/edit/', views.schedule_edit_view, name='schedule_edit'),
 ]

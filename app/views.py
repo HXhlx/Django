@@ -1,111 +1,145 @@
-from django.db.utils import IntegrityError
-from django.http import HttpResponseRedirect, Http404
-from django.shortcuts import render, get_object_or_404
-from django.urls import reverse
-from .models import *
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth import authenticate, login, logout
+from django.contrib import messages
+from django.core.paginator import Paginator
+from django.db import IntegrityError
+from django.shortcuts import render, redirect, get_object_or_404
+
+from .models import User, Profile, Schedule
+from .forms import RegisterForm, ProfileForm, ScheduleForm
 
 
-# Create your views here.
 def home(request):
-    return render(request, 'home.html')
+    return render(request, 'app/home.html')
 
 
-def register(request):
-    return render(request, 'register.html')
+def register_view(request):
+    if request.method == 'POST':
+        form = RegisterForm(request.POST)
+        if form.is_valid():
+            user = form.save()
+            Profile.objects.create(user=user)
+            login(request, user)
+            messages.success(request, '注册成功！')
+            return redirect('profile', username=user.username)
+    else:
+        form = RegisterForm()
+    return render(request, 'app/register.html', {'form': form})
 
 
-def register_confirm(request):
-    try:
-        username = request.POST['username']
-        password = request.POST['password']
-        confirmpassword = request.POST['confirmpassword']
-    except KeyError:
-        return render(request, 'register.html', {'username_error': '你正试图从非法途径访问该网址,请先注册!'})
-    if password != confirmpassword:
-        return render(request, 'register.html', {'password_error': "the password and the confirm password don't same"})
-    try:
-        User.objects.create(username=username, password=password)
-    except IntegrityError:
-        return render(request, 'register.html', {'username_error': 'the username already exists'})
-    return HttpResponseRedirect(reverse('look', args=(username,)))
+def login_view(request):
+    if request.method == 'POST':
+        username = request.POST.get('username', '')
+        password = request.POST.get('password', '')
+        user = authenticate(request, username=username, password=password)
+        if user is not None:
+            login(request, user)
+            messages.success(request, '登录成功！')
+            return redirect('profile', username=user.username)
+        else:
+            messages.error(request, '用户名或密码错误')
+    return render(request, 'app/login.html')
 
 
-def login(request):
-    return render(request, 'login.html')
+@login_required
+def logout_view(request):
+    logout(request)
+    messages.success(request, '已退出登录')
+    return redirect('home')
 
 
-def login_confirm(request):
-    try:
-        username = request.POST['username']
-        password = request.POST['password']
-    except KeyError:
-        return render(request, 'login.html', {'error_message': '你正试图从非法途径访问该网址,请先登录!'})
-    if User.objects.filter(username=username, password=password).exists():
-        return HttpResponseRedirect(reverse('look', args=(username,)))
-    return render(request, 'login.html', {'error_message': 'username or password is wrong'})
-
-
-def look(request, username):
+@login_required
+def profile_view(request, username):
     user = get_object_or_404(User, username=username)
-    user_list = user.to_list()
-    user_list.insert(0, ('password', user.password))
-    return render(request, 'look.html', {'user': user, 'user_list': user_list})
+    if request.user != user:
+        messages.error(request, '无权访问他人个人信息')
+        return redirect('home')
+    profile, _ = Profile.objects.get_or_create(user=user)
+    return render(request, 'app/profile.html', {'profile_user': user, 'profile': profile})
 
 
-def modify(request, username):
+@login_required
+def profile_edit_view(request, username):
     user = get_object_or_404(User, username=username)
-    return render(request, 'modify.html', {'user': user, 'user_list': user.to_list()})
+    if request.user != user:
+        messages.error(request, '无权修改他人个人信息')
+        return redirect('home')
+    profile, _ = Profile.objects.get_or_create(user=user)
+    if request.method == 'POST':
+        form = ProfileForm(request.POST, instance=profile)
+        if form.is_valid():
+            form.save()
+            messages.success(request, '个人信息修改成功！')
+            return redirect('profile', username=username)
+    else:
+        form = ProfileForm(instance=profile)
+    return render(request, 'app/profile_edit.html', {'form': form, 'profile_user': user})
 
 
-def modify_confirm(request, username):
+@login_required
+def schedule_list_view(request, username):
     user = get_object_or_404(User, username=username)
-    try:
-        user.password = request.POST['password']
-        user.name = (request.POST['name'] if request.POST['name'] != '' else None)
-        user.sex = (request.POST['sex'] if request.POST['sex'] != '' else None)
-        user.birth = (request.POST['birth'] if request.POST['birth'] != '' else None)
-        user.phone = (request.POST['phone'] if request.POST['phone'] != '' else None)
-        user.email = (request.POST['email'] if request.POST['email'] != '' else None)
-        user.address = (request.POST['address'] if request.POST['address'] != '' else None)
-    except KeyError:
-        raise Http404('你正试图从非法途径访问该网址,请先登录!')
-    user.save()
-    return HttpResponseRedirect(reverse('look', args=(username,)))
+    if request.user != user:
+        messages.error(request, '无权查看他人日程')
+        return redirect('home')
+
+    schedules = Schedule.objects.filter(user=user)
+
+    search_query = request.GET.get('q', '')
+    if search_query:
+        schedules = schedules.filter(title__icontains=search_query)
+
+    paginator = Paginator(schedules, 10)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
+    return render(request, 'app/schedule.html', {
+        'page_obj': page_obj,
+        'search_query': search_query,
+        'user': user,
+    })
 
 
-def schedule(request, username):
+@login_required
+def schedule_add_view(request, username):
     user = get_object_or_404(User, username=username)
-    return render(request, 'schedule.html', {'schedules': user.schedule_set.all(), 'username': username})
+    if request.user != user:
+        messages.error(request, '无权为他人添加日程')
+        return redirect('home')
+
+    if request.method == 'POST':
+        form = ScheduleForm(request.POST)
+        if form.is_valid():
+            schedule = form.save(commit=False)
+            schedule.user = user
+            schedule.save()
+            messages.success(request, '日程添加成功！')
+            return redirect('schedule_list', username=username)
+    else:
+        form = ScheduleForm()
+    return render(request, 'app/schedule_add.html', {'form': form, 'user': user})
 
 
-def insert(request, username):
+@login_required
+def schedule_edit_view(request, username, pk):
     user = get_object_or_404(User, username=username)
-    try:
-        title = request.POST['title']
-        content = (request.POST['content'] if request.POST['content'] != '' else None)
-        start_time = (request.POST['start time'] if request.POST['start time'] != '' else None)
-        end_time = (request.POST['end time'] if request.POST['end time'] != '' else None)
-    except KeyError:
-        return render(request, 'insert.html', {'username': username})
-    user.schedule_set.create(title=title, text=content, start_time=start_time, end_time=end_time)
-    return HttpResponseRedirect(reverse('schedule', args=(username,)))
+    if request.user != user:
+        messages.error(request, '无权修改他人日程')
+        return redirect('home')
 
+    schedule = get_object_or_404(Schedule, pk=pk, user=user)
 
-def change(request, username, title):
-    user = get_object_or_404(User, username=username)
-    sch = user.schedule_set.get(title=title)
-    try:
-        if request.POST['operate'] == 'delete':
-            sch.delete()
-        elif request.POST['operate'] == 'save':
-            sch.title = request.POST['title']
-            sch.text = (request.POST['content'] if request.POST['content'] != '' else None)
-            sch.start_time = (request.POST['start time'] if request.POST['start time'] != '' else None)
-            sch.end_time = (request.POST['end time'] if request.POST['end time'] != '' else None)
-            try:
-                sch.save()
-            except IntegrityError:
-                return render(request, 'change.html', {'username': username, 'schedule': sch})
-        return HttpResponseRedirect(reverse('schedule', args=(username,)))
-    except KeyError:
-        return render(request, 'change.html', {'username': username, 'schedule': sch})
+    if request.method == 'POST':
+        if request.POST.get('operate') == 'delete':
+            schedule.delete()
+            messages.success(request, '日程已删除')
+            return redirect('schedule_list', username=username)
+
+        form = ScheduleForm(request.POST, instance=schedule)
+        if form.is_valid():
+            form.save()
+            messages.success(request, '日程修改成功！')
+            return redirect('schedule_list', username=username)
+    else:
+        form = ScheduleForm(instance=schedule)
+    return render(request, 'app/schedule_edit.html', {'form': form, 'schedule': schedule, 'user': user})

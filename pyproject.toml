@@ -1,0 +1,11 @@
+[project]
+name = "django-pim"
+version = "1.0.0"
+description = "个人信息管理系统 - Django"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "django>=6.0",
+    "playwright>=1.60.0",
+    "selenium>=4.45.0",
+]

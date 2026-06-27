@@ -1,35 +1,49 @@
+from django.contrib.auth.models import AbstractUser
 from django.db import models
 
 
-# Create your models here.
-class User(models.Model):
-    sid = models.AutoField(primary_key=True)
-    username = models.CharField(max_length=30, unique=True)
-    password = models.CharField(max_length=30)
-    name = models.CharField(max_length=30, null=True)
-    sex = models.CharField(max_length=2, null=True, choices=(('男', '男'), ('女', '女')))
-    birth = models.DateField(null=True)
-    phone = models.CharField(max_length=20, null=True)
-    email = models.EmailField(max_length=30, null=True)
-    address = models.CharField(max_length=30, null=True)
+class User(AbstractUser):
+    """扩展用户模型"""
 
-    def to_list(self):
-        return [
-            ('name', (self.name if self.name is not None else '')),
-            ('sex', (self.sex if self.sex is not None else '')),
-            ('birth', (self.birth if self.birth is not None else '')),
-            ('phone', (self.phone if self.phone is not None else '')),
-            ('email', (self.email if self.email is not None else '')),
-            ('address', (self.address if self.address is not None else ''))
-        ]
+    class Meta:
+        db_table = 'app_user'
+        verbose_name = '用户'
+        verbose_name_plural = '用户'
 
     def __str__(self):
         return self.username
 
 
+class Profile(models.Model):
+    """用户个人信息"""
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='profile', verbose_name='用户')
+    name = models.CharField('姓名', max_length=30, blank=True)
+    sex = models.CharField('性别', max_length=2, choices=(('男', '男'), ('女', '女')), blank=True)
+    birth = models.DateField('出生日期', null=True, blank=True)
+    phone = models.CharField('电话', max_length=20, blank=True)
+    email = models.EmailField('邮箱', max_length=50, blank=True)
+    address = models.CharField('地址', max_length=100, blank=True)
+
+    class Meta:
+        verbose_name = '个人信息'
+        verbose_name_plural = '个人信息'
+
+    def __str__(self):
+        return f"{self.user.username} 的个人信息"
+
+
 class Schedule(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    title = models.CharField(max_length=100, unique=True)
-    text = models.TextField(max_length=500, null=True)
-    start_time = models.DateTimeField(null=True)
-    end_time = models.DateTimeField(null=True)
+    """日程安排"""
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='schedules', verbose_name='用户')
+    title = models.CharField('标题', max_length=100)
+    text = models.TextField('内容', max_length=500, blank=True)
+    start_time = models.DateTimeField('开始时间', null=True, blank=True)
+    end_time = models.DateTimeField('结束时间', null=True, blank=True)
+
+    class Meta:
+        ordering = ['-start_time']
+        verbose_name = '日程'
+        verbose_name_plural = '日程'
+
+    def __str__(self):
+        return self.title

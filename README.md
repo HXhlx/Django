@@ -1,8 +1,39 @@
-# Django
-Python课程设计:个人信息管理系统
-# 题目四. 基于Web的个人信息管理系统
-    设计内容及要求: 
-    1.登录与注册
-    2.个人基本信息管理模块
-    3.日程安排模块: 添加某时间段要做的若干事情(标题,内容,开始\结束时间)
-    4.完成课程设计报告.
+# 个人信息管理系统
+
+基于 Django 的个人信息管理系统，支持用户注册登录、个人信息管理、日程安排管理。
+
+## 功能
+
+- 用户注册与登录
+- 个人信息查看与编辑
+- 日程增删改查
+- 日程搜索与分页
+
+## 快速开始
+
+```bash
+# 安装依赖
+uv sync
+
+# 初始化数据库
+uv run python manage.py migrate
+
+# 创建管理员
+uv run python manage.py createsuperuser
+
+# 启动服务
+uv run python manage.py runserver
+```
+
+访问 http://127.0.0.1:8000/
+
+## 配置
+
+复制 `.env.example` 为 `.env`，按需修改配置。
+
+## 技术栈
+
+- Python 3.12+
+- Django 6.0
+- Bootstrap 5
+- SQLite（默认）/ MySQL / PostgreSQL
