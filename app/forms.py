@@ -16,6 +16,11 @@ class RegisterForm(UserCreationForm):
             'username': _('用户名'),
         }
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for field in self.fields.values():
+            field.widget.attrs.pop('required', None)
+
 
 class ProfileForm(forms.ModelForm):
     """个人信息表单"""
@@ -39,6 +44,11 @@ class ProfileForm(forms.ModelForm):
             'email': forms.EmailInput(attrs={'class': 'form-control'}),
             'address': forms.TextInput(attrs={'class': 'form-control'}),
         }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for field in self.fields.values():
+            field.widget.attrs.pop('required', None)
 
     def clean_name(self):
         name = self.cleaned_data.get('name', '').strip()
@@ -91,6 +101,8 @@ class ScheduleForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        for field in self.fields.values():
+            field.widget.attrs.pop('required', None)
         if self.instance and self.instance.pk:
             if self.instance.start_time:
                 self.fields['start_date'].initial = self.instance.start_time.date()
