@@ -52,9 +52,11 @@ class ProfileForm(forms.ModelForm):
         if not phone:
             raise forms.ValidationError('请输入电话号码')
         import re
-        pattern = r'^1[3-9]\d{9}$'
-        if not re.match(pattern, phone):
-            raise forms.ValidationError('请输入有效的手机号码（11位，以1开头）')
+        if not re.match(r'^\+?[0-9\s\-()]{7,20}$', phone):
+            raise forms.ValidationError('请输入有效的电话号码（支持国际格式，如 +86 13800138000）')
+        digits = re.sub(r'\D', '', phone)
+        if len(digits) < 7 or len(digits) > 15:
+            raise forms.ValidationError('电话号码长度应在 7-15 位之间')
         return phone
 
     def clean_email(self):
