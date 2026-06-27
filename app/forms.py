@@ -39,6 +39,33 @@ class ProfileForm(forms.ModelForm):
             'address': forms.TextInput(attrs={'class': 'form-control'}),
         }
 
+    def clean_name(self):
+        name = self.cleaned_data.get('name', '').strip()
+        if not name:
+            raise forms.ValidationError('请输入姓名')
+        if len(name) < 2:
+            raise forms.ValidationError('姓名至少需要 2 个字符')
+        return name
+
+    def clean_phone(self):
+        phone = self.cleaned_data.get('phone', '').strip()
+        if not phone:
+            raise forms.ValidationError('请输入电话号码')
+        import re
+        pattern = r'^1[3-9]\d{9}$'
+        if not re.match(pattern, phone):
+            raise forms.ValidationError('请输入有效的手机号码（11位，以1开头）')
+        return phone
+
+    def clean_email(self):
+        email = self.cleaned_data.get('email', '').strip()
+        if email:
+            import re
+            pattern = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
+            if not re.match(pattern, email):
+                raise forms.ValidationError('请输入有效的邮箱地址')
+        return email
+
 
 class ScheduleForm(forms.ModelForm):
     """日程表单"""
