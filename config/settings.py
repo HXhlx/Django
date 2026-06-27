@@ -1,5 +1,6 @@
 import os
 from pathlib import Path
+from django.utils.translation import gettext_lazy as _
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -100,8 +101,8 @@ USE_L10N = True
 USE_TZ = True
 
 LANGUAGES = [
-    ('zh-hans', '简体中文'),
-    ('en', 'English'),
+    ('zh-hans', _('简体中文')),
+    ('en', _('English')),
 ]
 
 LOCALE_PATHS = [BASE_DIR / 'locale']

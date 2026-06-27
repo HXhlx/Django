@@ -211,3 +211,9 @@ msgstr "女"
 
 msgid "%(username)s 的个人信息"
 msgstr "%(username)s 的个人信息"
+
+msgid "添加"
+msgstr "添加"
+
+msgid "请填写该字段"
+msgstr "请填写该字段"

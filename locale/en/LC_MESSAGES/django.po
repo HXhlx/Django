@@ -213,3 +213,9 @@ msgstr "Female"
 
 msgid "%(username)s 的个人信息"
 msgstr "%(username)s's Profile"
+
+msgid "添加"
+msgstr "Add"
+
+msgid "请填写该字段"
+msgstr "This field is required"
