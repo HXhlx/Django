@@ -1,5 +1,7 @@
 # 个人信息管理系统
 
+> English documentation available in [README_EN.md](README_EN.md)
+
 基于 Django 的个人信息管理系统，支持用户注册登录、个人信息管理、日程安排管理。
 
 ## 功能
@@ -42,10 +44,6 @@ uv run python manage.py runserver
 ## 国际化
 
 系统支持中文和英文。通过导航栏的语言切换器切换语言。
-
-## 英文文档
-
-See [README_EN.md](README_EN.md) for English documentation.
 
 ## License
 
