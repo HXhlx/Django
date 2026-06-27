@@ -8,6 +8,7 @@
 - 个人信息查看与编辑
 - 日程增删改查
 - 日程搜索与分页
+- 中英双语支持
 
 ## 快速开始
 
@@ -37,3 +38,15 @@ uv run python manage.py runserver
 - Django 6.0
 - Bootstrap 5
 - SQLite（默认）/ MySQL / PostgreSQL
+
+## 国际化
+
+系统支持中文和英文。通过导航栏的语言切换器切换语言。
+
+## 英文文档
+
+See [README_EN.md](README_EN.md) for English documentation.
+
+## License
+
+MIT

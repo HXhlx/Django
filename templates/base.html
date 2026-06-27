@@ -1,9 +1,12 @@
+{% load i18n %}
 <!DOCTYPE html>
-<html lang="zh-CN">
+{% load i18n %}
+{% get_current_language as LANGUAGE_CODE %}
+<html lang="{{ LANGUAGE_CODE }}">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <title>{% block title %}个人信息管理系统{% endblock %}</title>
+    <title>{% block title %}{% trans "个人信息管理系统" %}{% endblock %}</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
     <style>
@@ -77,13 +80,31 @@
             border-radius: 10px;
             border: none;
         }
+        .lang-switcher {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+        .lang-switcher a {
+            color: rgba(255,255,255,0.75);
+            text-decoration: none;
+            font-size: 0.9rem;
+            padding: 2px 6px;
+            border-radius: 4px;
+            transition: all 0.2s;
+        }
+        .lang-switcher a:hover,
+        .lang-switcher a.active {
+            color: #fff;
+            background: rgba(255,255,255,0.15);
+        }
     </style>
 </head>
 <body>
 <nav class="navbar navbar-expand-lg navbar-dark mb-4">
     <div class="container">
         <a class="navbar-brand" href="{% url 'home' %}">
-            <i class="bi bi-person-lines-fill me-2"></i>个人信息管理系统
+            <i class="bi bi-person-lines-fill me-2"></i>{% trans "个人信息管理系统" %}
         </a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
             <span class="navbar-toggler-icon"></span>
@@ -93,31 +114,40 @@
                 {% if user.is_authenticated %}
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'profile' user.username %}">
-                            <i class="bi bi-person me-1"></i>个人信息
+                            <i class="bi bi-person me-1"></i>{% trans "个人信息" %}
                         </a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'schedule_list' user.username %}">
-                            <i class="bi bi-calendar3 me-1"></i>日程管理
+                            <i class="bi bi-calendar3 me-1"></i>{% trans "日程管理" %}
                         </a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'logout' %}">
-                            <i class="bi bi-box-arrow-right me-1"></i>退出
+                            <i class="bi bi-box-arrow-right me-1"></i>{% trans "退出" %}
                         </a>
                     </li>
                 {% else %}
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'login' %}">
-                            <i class="bi bi-box-arrow-in-right me-1"></i>登录
+                            <i class="bi bi-box-arrow-in-right me-1"></i>{% trans "登录" %}
                         </a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'register' %}">
-                            <i class="bi bi-person-plus me-1"></i>注册
+                            <i class="bi bi-person-plus me-1"></i>{% trans "注册" %}
                         </a>
                     </li>
                 {% endif %}
+                <li class="nav-item">
+                    <span class="nav-link text-white-50">|</span>
+                </li>
+                <li class="nav-item">
+                    <div class="lang-switcher">
+                        <a href="?lang=zh-hans" class="{% if LANGUAGE_CODE == 'zh-hans' %}active{% endif %}">中文</a>
+                        <a href="?lang=en" class="{% if LANGUAGE_CODE == 'en' %}active{% endif %}">EN</a>
+                    </div>
+                </li>
             </ul>
         </div>
     </div>
@@ -139,7 +169,7 @@
 
 <footer>
     <div class="container">
-        <p class="mb-0">&copy; 2025 个人信息管理系统 - 基于 Django 构建</p>
+        <p class="mb-0">&copy; 2025 {% trans "个人信息管理系统" %} - {% trans "基于 Django 构建" %}</p>
     </div>
 </footer>
 

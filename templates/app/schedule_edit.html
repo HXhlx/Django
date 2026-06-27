@@ -1,6 +1,8 @@
 {% extends 'base.html' %}
 
-{% block title %}编辑日程{% endblock %}
+{% load i18n %}
+
+{% block title %}{% trans "编辑日程" %}{% endblock %}
 
 {% block content %}
 <div class="row justify-content-center">
@@ -8,7 +10,7 @@
         <div class="card">
             <div class="card-header">
                 <h5 class="mb-0">
-                    <i class="bi bi-calendar-check me-2"></i>编辑日程
+                    <i class="bi bi-calendar-check me-2"></i>{% trans "编辑日程" %}
                 </h5>
             </div>
             <div class="card-body">
@@ -92,15 +94,15 @@
 
                     <div class="d-flex justify-content-between">
                         <button type="submit" name="operate" value="delete" class="btn btn-danger"
-                                onclick="return confirm('确定删除此日程？')">
-                            <i class="bi bi-trash me-1"></i>删除
+                                onclick="return confirm('{% trans "确定删除此日程？" %}')">
+                            <i class="bi bi-trash me-1"></i>{% trans "删除" %}
                         </button>
                         <div class="d-flex gap-2">
                             <a href="{% url 'schedule_list' user.username %}" class="btn btn-secondary">
-                                <i class="bi bi-x-circle me-1"></i>取消
+                                <i class="bi bi-x-circle me-1"></i>{% trans "取消" %}
                             </a>
                             <button type="submit" name="operate" value="save" class="btn btn-primary">
-                                <i class="bi bi-check-circle me-1"></i>保存
+                                <i class="bi bi-check-circle me-1"></i>{% trans "保存" %}
                             </button>
                         </div>
                     </div>
