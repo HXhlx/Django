@@ -160,3 +160,54 @@ msgstr "请输入有效的邮箱地址"
 
 msgid "姓名至少需要 2 个字符"
 msgstr "姓名至少需要 2 个字符"
+
+msgid "注册成功！"
+msgstr "注册成功！"
+
+msgid "登录成功！"
+msgstr "登录成功！"
+
+msgid "用户名或密码错误"
+msgstr "用户名或密码错误"
+
+msgid "已退出登录"
+msgstr "已退出登录"
+
+msgid "无权访问他人个人信息"
+msgstr "无权访问他人个人信息"
+
+msgid "无权修改他人个人信息"
+msgstr "无权修改他人个人信息"
+
+msgid "个人信息修改成功！"
+msgstr "个人信息修改成功！"
+
+msgid "无权查看他人日程"
+msgstr "无权查看他人日程"
+
+msgid "无权为他人添加日程"
+msgstr "无权为他人添加日程"
+
+msgid "日程添加成功！"
+msgstr "日程添加成功！"
+
+msgid "无权修改他人日程"
+msgstr "无权修改他人日程"
+
+msgid "日程已删除"
+msgstr "日程已删除"
+
+msgid "日程修改成功！"
+msgstr "日程修改成功！"
+
+msgid "中文"
+msgstr "中文"
+
+msgid "男"
+msgstr "男"
+
+msgid "女"
+msgstr "女"
+
+msgid "%(username)s 的个人信息"
+msgstr "%(username)s 的个人信息"

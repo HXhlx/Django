@@ -19,7 +19,7 @@ class Profile(models.Model):
     """用户个人信息"""
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='profile', verbose_name=_('用户'))
     name = models.CharField(_('姓名'), max_length=30)
-    sex = models.CharField(_('性别'), max_length=2, choices=(('男', '男'), ('女', '女')), blank=True)
+    sex = models.CharField(_('性别'), max_length=2, choices=(('男', _('男')), ('女', _('女'))), blank=True)
     birth = models.DateField(_('出生日期'), null=True, blank=True)
     phone = models.CharField(_('电话'), max_length=20)
     email = models.EmailField(_('邮箱'), max_length=50, blank=True)
@@ -30,7 +30,7 @@ class Profile(models.Model):
         verbose_name_plural = _('个人信息')
 
     def __str__(self):
-        return f"{self.user.username} 的个人信息"
+        return _('%(username)s 的个人信息') % {'username': self.user.username}
 
 
 class Schedule(models.Model):
