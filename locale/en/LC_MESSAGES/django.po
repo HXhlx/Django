@@ -148,3 +148,17 @@ msgstr "Logout"
 
 msgid "基于 Django 构建"
 msgstr "Built with Django"
+
+msgid "请输入有效的电话号码（支持国际格式，如 +86 13800138000）"
+msgstr ""
+"Please enter a valid phone number (international format supported, e.g. +86 "
+"13800138000)"
+
+msgid "电话号码长度应在 7-15 位之间"
+msgstr "Phone number should be between 7 and 15 digits"
+
+msgid "请输入有效的邮箱地址"
+msgstr "Please enter a valid email address"
+
+msgid "姓名至少需要 2 个字符"
+msgstr "Name must be at least 2 characters"
