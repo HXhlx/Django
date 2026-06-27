@@ -1,6 +1,6 @@
 # 个人信息管理系统
 
-> English documentation available in [README_EN.md](README_EN.md)
+[English](README_EN.md) | [中文文档](README.md)
 
 基于 Django 的个人信息管理系统，支持用户注册登录、个人信息管理、日程安排管理。
 
